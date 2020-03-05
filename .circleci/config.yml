@@ -1,0 +1,17 @@
+version: 2
+
+jobs:
+  gcc-7:
+    docker:
+      - image:  conanio/gcc7
+    steps:
+      - checkout
+      - run:
+          name: Creating Build Files
+          command: 'cmake -Bbuild'
+      - run:
+          name: Creating binary files
+          command: 'cmake --build build'
+      - run:
+          name: Unit tests
+          command: ./build/tests/test-fcdk
