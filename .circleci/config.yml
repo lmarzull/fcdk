@@ -1,7 +1,6 @@
 version: 2
-
 jobs:
-  gcc-7:
+  build:
     docker:
       - image:  conanio/gcc7
     steps:
@@ -15,3 +14,9 @@ jobs:
       - run:
           name: Unit tests
           command: ./build/tests/test-fcdk
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
