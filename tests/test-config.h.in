@@ -1,0 +1,10 @@
+#ifndef __TESTS_TEST_CONFIG_H__
+#define __TESTS_TEST_CONFIG_H__
+
+#include <filesystem>
+
+#define binary_directory std::filesystem::path("@CMAKE_CURRENT_BINARY_DIR@")
+#define source_directory std::filesystem::path("@CMAKE_CURRENT_SOURCE_DIR@")
+
+
+#endif  // #ifndef __TESTS_TEST_CONFIG_H__

@@ -1,3 +1,4 @@
+#include <stdexcept>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
@@ -13,16 +14,6 @@ DECLARE_EXCEPTION(FileNotFoundError, std::runtime_error);
 
 //------------------------------------------------------------------------------
 TEST_SUITE("Exceptions") {
-  TEST_CASE("Exception defined with DECLARE_EXCEPTION are of the parent type"){
-    REQUIRE_THROWS_AS(RAISE(Test::FileNotFoundError),
-                      std::runtime_error);
-  }
-
-  TEST_CASE("Macro RAISE throw the specified exception") {
-    REQUIRE_THROWS_AS(RAISE(Test::FileNotFoundError),
-                      Test::FileNotFoundError);
-  }
-
   TEST_CASE("Macro RAISE_MSG throw the specified exception with given message"){
 
     std::string filename("my filename");

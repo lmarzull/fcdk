@@ -2,7 +2,7 @@
 #define __FCDK_EXCEPTION_H__
 
 
-#include <exception>
+#include <stdexcept>
 #include <sstream>
 #include <string>
 
@@ -21,7 +21,7 @@ public:\
 
 
 #define RAISE( e ) do {\
-    throw e("");\
+    throw e{};\
   } while( 0 )
 
 
@@ -40,6 +40,16 @@ public:\
     os << ": " << m;\
     throw e(os.str());\
   }while(0)
+
+
+
+namespace fcdk {
+
+DECLARE_EXCEPTION(NotFoundError, std::logic_error);
+
+DECLARE_EXCEPTION(SystemError,   std::runtime_error);
+
+} // fcdk
 
 
 #endif  // #ifndef __FCDK_EXCEPTION_H__

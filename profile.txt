@@ -1,0 +1,6 @@
+[settings]
+os=Linux
+compiler=gcc
+compiler.libcxx=libstdc++11
+arch=x86_64
+build_type=RelWithDebInfo
