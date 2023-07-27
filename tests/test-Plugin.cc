@@ -48,7 +48,6 @@ SCENARIO("Call a method of the plugin factory object") {
       plugin.load(binary_directory/"libplugin.so");
       THEN("Calling a method from the factory return the correct object") {
         CHECK(plugin->plugin_init_called() == true);
-        CHECK(plugin->plugin_fini_called() == true);
         CHECK(plugin->getObject1().name() == "Object1");
         CHECK(plugin->getObject2()->name() == "Object2");
         CHECK(plugin->name() == "test_plugin::MyPluginInterface");

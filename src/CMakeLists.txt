@@ -2,8 +2,7 @@
 
 ADD_LIBRARY(fcdk SHARED
             fcdk/abi.cc
-            fcdk/SharedLibrary.cc
-            fcdk/Plugin.cc)
+            fcdk/SharedLibrary.cc)
 ADD_LIBRARY(FRATAL::fcdk ALIAS fcdk)
 
 INSTALL(TARGETS fcdk EXPORT libfcdkExport LIBRARY)

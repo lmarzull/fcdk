@@ -62,8 +62,16 @@ extern "C" {
 test_plugin::MyPluginInterface  plugin_factory;
 
 
-void  plugin_init() {}
-void  plugin_fini() {}
+void  plugin_init()
+{
+
+  plugin_factory._plugin_init_flag = true;
+}
+
+void  plugin_fini()
+{
+  plugin_factory._plugin_fini_flag = true;
+}
 
 
 } // extern "C"
