@@ -1,21 +1,24 @@
 #===============================================================================
-CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
+cmake_minimum_required(VERSION 3.23)
 
-
-PROJECT(
-  fcdk VERSION 1.0.0
+#-------------------------------------------------------------------------------
+project( fcdk
   DESCRIPTION "Fratal C++ Development Kit"
   LANGUAGES "CXX"
 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_compile_options(-Wall -Wextra -pedantic)
+
+
 IF(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
+  enable_testing()
 ENDIF()
 
-
-ADD_SUBDIRECTORY(src)
-
+add_subdirectory(src)
 
 IF(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
-  ADD_SUBDIRECTORY(tests)
+  add_subdirectory(tests)
 ENDIF()
