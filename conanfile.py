@@ -47,6 +47,10 @@ class fcdk_recipe(ConanFile):
     cmake.install()
 
   def package_info(self):
+    self.cpp_info.names["cmake_info_package"] = "fcdk"
+    self.cpp_info.names["cmake_find_package_multi"] = "fcdk"
+    self.cpp_info.names["cmake"] = "FRATAL"
     self.cpp_info.libs = ["fcdk"]
     self.cpp_info.libdirs = ["lib"]
     self.cpp_info.includedirs = ["include"]
+    self.cpp_info.set_property("cmake_target_name", "FRATAL::fcdk")

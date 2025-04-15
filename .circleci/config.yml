@@ -1,20 +1,36 @@
-version: 2
+version: 2.1
+
+executors:
+  conan_executor:
+    docker:
+      - image: conanio/gcc12-ubuntu18.04
+    working_directory: ~/project
+
+
 jobs:
-  gcc-7:
-    build:
-      docker:
-        - image: conanio/gcc7
-      steps:
-        - checkout
-        - run:
-            name: Build Conan package
-            command: |
-              sudo pip install --upgrade conan
-              conan user
-              conan create $PWD user/channel
+  build_fcdk:
+    executor: conan_executor
+    steps:
+      - checkout
+
+      - run:
+          name: Install Conan
+          command: |
+            pip install --user conan==2.15.0
+            export PATH=/home/conan/.local/bin:$PATH
+            conan profile detect
+            conan --version
+            conan install $PWD --build=missing
+
+      - run:
+          name: Configure Conan
+          command: |
+            conan profile detect
+            conan remote add conancenter https://center.conan.io
+
 
 workflows:
-  version: 2
+  version: 2.1
   build:
     jobs:
-      - gcc-7
+      - build_fcdk

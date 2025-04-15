@@ -71,16 +71,16 @@ protected:
  *
  *  The object given as template parameters to plugin object should:
  *  1. Inherite from plugin_object_interface
- *  2. Has a static method called plugin_api_id
+ *  2. Has a static method called api_id
  *
- *  The static method "plugin_api_id" should return the API ID of the plugin
+ *  The static method "api_id" should return the API ID of the plugin
  *  implemented api. The one with which the plugin was compiled.
  */
 template <typename T>
 concept plugin_valid_template =
   requires{
     std::is_base_of<plugin_object_interface, T>::value;
-    { T::plugin_api_id() } -> std::same_as<const std::string&>;
+    { T::api_id() } -> std::same_as<const std::string&>;
   };
 
 
@@ -104,16 +104,16 @@ public:
   void  close();
 
 
-  T_interface*        operator->()       { return _interface; }
-  const T_interface*  operator->() const { return _interface; }
+  T_interface*        operator->()       { return interface_; }
+  const T_interface*  operator->() const { return interface_; }
 
 
 private:
-  shared_library    _shared_library;
-  T_interface*      _interface = nullptr;
+  shared_library    shared_library_;
+  T_interface*      interface_ = nullptr;
 
-  void              _load_library(const std::filesystem::path&);
-  T_interface*      _get_interface();
+  void              load_library_(const std::filesystem::path&);
+  T_interface*      get_interface_();
 };
 
 
@@ -135,28 +135,28 @@ template <typename T_interface> requires plugin_valid_template<T_interface>
 void
 plugin<T_interface>::load(const std::filesystem::path& library_filename)
 {
-  _load_library(library_filename);
-  _interface = _get_interface();
+  load_library_(library_filename);
+  interface_ = get_interface_();
 }
 
 
 
 template <typename T_interface> requires plugin_valid_template<T_interface>
 void
-plugin<T_interface>::_load_library(const std::filesystem::path&  library_filename)
+plugin<T_interface>::load_library_(const std::filesystem::path&  library_filename)
 {
-  _shared_library.load(library_filename, fcdk::shared_library::LAZY);
+  shared_library_.load(library_filename, fcdk::shared_library::LAZY);
 }
 
 
 template <typename T_interface> requires plugin_valid_template<T_interface>
 T_interface*
-plugin<T_interface>::_get_interface()
+plugin<T_interface>::get_interface_()
 {
   // TODO: a refaire
   T_interface* interface{nullptr};
   try {
-    interface = *_shared_library.get_symbol<T_interface**>("plugin_factory");
+    interface = *shared_library_.get_symbol<T_interface**>("plugin_factory");
   } catch(const fcdk::system_error& excp ){
     RAISE_MSG(plugin_error, excp.what());
   }
@@ -164,7 +164,7 @@ plugin<T_interface>::_get_interface()
   if(!interface)
     RAISE_MSG(plugin_error, "Invalid plugin: factory not created");
 
-  if(interface->plugin_implemented_api_id() != T_interface::plugin_api_id()) {
+  if(interface->plugin_implemented_api_id() != T_interface::api_id()) {
     RAISE_MSG(plugin_error, "Invalid plugin: Wrong API Id");
   }
   return interface;
@@ -175,8 +175,8 @@ template <typename T_interface> requires plugin_valid_template<T_interface>
 void
 plugin<T_interface>::close()
 {
-  _shared_library.close();
-  _interface = nullptr;
+  shared_library_.close();
+  interface_ = nullptr;
 }
 
 

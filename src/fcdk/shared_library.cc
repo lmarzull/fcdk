@@ -4,10 +4,8 @@
 #include <fcdk/shared_library.h>
 #include <fcdk/abi.h>
 
-#include <iostream>
 #include <dlfcn.h>
 #include <utility>
-
 
 
 namespace fcdk {
@@ -29,19 +27,19 @@ static int to_dlopen(int f) {
 //------------------------------------------------------------------------------
 shared_library::shared_library(const std::filesystem::path& library_filename,
                                int flags)
-  : _handle{nullptr}
-  , _flags{flags}
-  , _libname{library_filename}
+  : handle_{nullptr}
+  , flags_{flags}
+  , libname_{library_filename}
 {
-  load(_libname, _flags);
+  load(libname_, flags_);
 }
 
 
 //------------------------------------------------------------------------------
 shared_library::shared_library(shared_library&& moved)
-  : _handle(std::exchange(moved._handle, nullptr))
-  , _flags(moved._flags)
-  , _libname(std::move(moved._libname))
+  : handle_(std::exchange(moved.handle_, nullptr))
+  , flags_(moved.flags_)
+  , libname_(std::move(moved.libname_))
 {
 }
 
@@ -54,9 +52,9 @@ shared_library::operator=(shared_library&& moved)
     return *this;
 
   close();
-  _handle = std::exchange(moved._handle, nullptr);
-  _flags = moved._flags;
-  _libname = std::move(moved._libname);
+  handle_ = std::exchange(moved.handle_, nullptr);
+  flags_ = moved.flags_;
+  libname_ = std::move(moved.libname_);
   return *this;
 }
 
@@ -68,7 +66,7 @@ shared_library::~shared_library()
     close();
   }
   catch(const std::exception& excp) {
-  // avoid exiting destructor with exception
+    // avoid exiting destructor with exception
   }
 }
 
@@ -77,7 +75,7 @@ shared_library::~shared_library()
 bool
 shared_library::is_loaded() const
 {
-  return _handle;
+  return handle_;
 }
 
 
@@ -85,7 +83,7 @@ shared_library::is_loaded() const
 void
 shared_library::load(const std::filesystem::path& library_filename, int flags)
 {
-  _handle = dlopen(library_filename.c_str(), to_dlopen(flags));
+  handle_ = dlopen(library_filename.c_str(), to_dlopen(flags));
   if (!is_loaded()) {
     const std::string& error = dlerror();
     RAISE_MSG(system_error, "dlerror: [" << (error.empty() ? "None" : error) << ']');
@@ -97,21 +95,21 @@ shared_library::load(const std::filesystem::path& library_filename, int flags)
 void
 shared_library::close()
 {
-  if(is_loaded() && dlclose(_handle)) {
+  if(is_loaded() && dlclose(handle_)) {
     RAISE_MSG(system_error, dlerror());
   }
-  _handle = nullptr;
+  handle_ = nullptr;
 }
 
 
 //------------------------------------------------------------------------------
 void*
-shared_library::_get_symbol( const char* name ) const
+shared_library::get_symbol_( const char* name ) const
 {
   void* sym=nullptr;
   if (is_loaded()) {
     char* error = dlerror();  // Clear any previous error
-    sym=dlsym(_handle, name);
+    sym=dlsym(handle_, name);
     if (!sym && (error=dlerror()))
       RAISE_MSG(system_error, "dlsym error:'" << error << '\'');
   }

@@ -71,13 +71,11 @@ public:
   ~shared_library();
 
 
-  //----------------------------------------------------------------------------
   /** Load the given library name with specified flags
    *
-   *  @library  - A path name to the library to load.
-   *
-   *  @exception  fcdk::not_found_error - library filename was not Found
-   *              fcdk::system_error    - A problem occurs with dlopen
+   *  # Exceptions
+   *  *fcdk::not_found_error* library filename was not Found
+   *  *fcdk::system_error*    A problem occurs with dlopen
    */
   void  load(const std::filesystem::path& library,
              int f=flags::NOW|flags::GLOBAL|flags::DEEPBIND);
@@ -97,7 +95,6 @@ public:
       get_symbol(const char* symbol_name) const;
 
 
-  //----------------------------------------------------------------------------
   /** true if a library was loaded, or false otherwise
    */
   bool  is_loaded() const;
@@ -106,11 +103,11 @@ public:
 
 
 private:
-  void*                   _handle = nullptr;
-  int                     _flags = 0;
-  std::filesystem::path   _libname;
+  void*                   handle_ = nullptr;
+  int                     flags_ = 0;
+  std::filesystem::path   libname_;
 
-  void* _get_symbol(const char* name) const;
+  void* get_symbol_(const char* name) const;
 };
 
 
@@ -121,7 +118,7 @@ shared_library::get_symbol(const char* name) const
 {
   if(!is_loaded())
     RAISE_MSG(bad_state_error, "SharedLibrary not loaded!");
-  T_symbol_type t = reinterpret_cast<T_symbol_type>(_get_symbol(name));
+  T_symbol_type t = reinterpret_cast<T_symbol_type>(get_symbol_(name));
   return t;
 }
 

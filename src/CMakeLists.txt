@@ -15,5 +15,5 @@ add_library(FRATAL::fcdk ALIAS fcdk)
 
 install(TARGETS fcdk EXPORT libfcdkExport LIBRARY)
 install(EXPORT libfcdkExport
-        DESTINATION cmake
+        DESTINATION lib/cmake/fcdk
         NAMESPACE FRATAL::)

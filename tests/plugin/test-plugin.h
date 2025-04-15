@@ -27,7 +27,7 @@ public:
   virtual const std::string& vendor() const override = 0;
   virtual const std::string& plugin_implemented_api_id() const override = 0;
 
-  static const std::string& plugin_api_id()
+  static const std::string& api_id()
   {
     static const std::string api_id{API_ID};
     return api_id;
