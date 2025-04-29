@@ -17,7 +17,7 @@ target_include_directories(test-fcdk PRIVATE ${doctest_INCLUDE_DIRS})
 
 
 # for fcdk library headers
-target_link_libraries(test-fcdk PRIVATE FRATAL::fcdk)
+target_link_libraries(test-fcdk PRIVATE fcdk)
 
 # for cmake generated configuration files
 target_include_directories(test-fcdk PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

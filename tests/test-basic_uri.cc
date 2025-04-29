@@ -1,8 +1,6 @@
 #include <doctest/doctest.h>
 
 #include <fcdk/basic_uri.h>
-#include <stdexcept>
-
 
 
 TEST_CASE("Parsing URI") {
@@ -16,7 +14,6 @@ TEST_CASE("Parsing URI") {
 
   SUBCASE("filename: with scheme") {
     fcdk::uri var("file:/tmp/toto.txt");
-    std::cerr << "path: '" << var.path() << "'\n";
     REQUIRE(var.scheme() == "file");
     REQUIRE(var.path() == "/tmp/toto.txt");
     REQUIRE(var.authority().empty());

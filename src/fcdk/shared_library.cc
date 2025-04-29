@@ -86,7 +86,7 @@ shared_library::load(const std::filesystem::path& library_filename, int flags)
   handle_ = dlopen(library_filename.c_str(), to_dlopen(flags));
   if (!is_loaded()) {
     const std::string& error = dlerror();
-    RAISE_MSG(system_error, "dlerror: [" << (error.empty() ? "None" : error) << ']');
+    RAISE_ERRNO(system_error, << "dlerror: [" << (error.empty() ? "None" : error) << ']');
   }
 }
 
@@ -96,7 +96,7 @@ void
 shared_library::close()
 {
   if(is_loaded() && dlclose(handle_)) {
-    RAISE_MSG(system_error, dlerror());
+    RAISE_MSG(system_error, << dlerror());
   }
   handle_ = nullptr;
 }
@@ -111,7 +111,7 @@ shared_library::get_symbol_( const char* name ) const
     char* error = dlerror();  // Clear any previous error
     sym=dlsym(handle_, name);
     if (!sym && (error=dlerror()))
-      RAISE_MSG(system_error, "dlsym error:'" << error << '\'');
+      RAISE_MSG(system_error, << "dlsym error:'" << error << '\'');
   }
   return sym;
 }

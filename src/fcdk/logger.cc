@@ -36,7 +36,7 @@ to_level(const std::string& str)
   if(str=="critical") return ::spdlog::level::critical;
   if(str=="error") return ::spdlog::level::err;
   if(str=="off") return ::spdlog::level::off;
-  RAISE_MSG(fcdk::bad_value_error, "Bad level '" << str << '\'');
+  RAISE_MSG(fcdk::bad_value_error, << "Bad level '" << str << '\'');
 }
 
 
@@ -45,7 +45,7 @@ bool
 to_bool(const std::string& str)
 {
   if((str!="true") && (str!="false"))
-    RAISE_MSG(fcdk::bad_value_error, "Wrong boolean value '" << str << '\'');
+    RAISE_MSG(fcdk::bad_value_error, << "Wrong boolean value '" << str << '\'');
 
   return str=="true";
 }
@@ -79,7 +79,7 @@ struct sink
     if(property_name=="pattern")  { pattern = property_value; return; }
     if(property_name=="level")    { level = to_level(property_value); return; }
     if(property_name=="mt")       { mt = to_bool(property_value); return; }
-    RAISE_MSG(fcdk::bad_value_error, "Invalid property '" << property_name << "' for sink");
+    RAISE_MSG(fcdk::bad_value_error, << "Invalid property '" << property_name << "' for sink");
   }
 };
 
@@ -105,7 +105,7 @@ struct console_sink  : public  sink
       if(!color && !mt) { ::spdlog::stderr_logger_st(name); return; }
     }
     RAISE_MSG(fcdk::bad_value_error,
-              "Property 'output' is mandatory for Consol sink '"
+              << "Property 'output' is mandatory for Consol sink '"
               << output << '\'');
   }
 
@@ -184,7 +184,7 @@ struct daily_file_sink : public  file_sink
   virtual void create() override
   {
     if(std::size(hour_min_24)!=5)
-      RAISE_MSG(fcdk::bad_value_error, "Invalid hour/minute '" << hour_min_24 << '\'');
+      RAISE_MSG(fcdk::bad_value_error, << "Invalid hour/minute '" << hour_min_24 << '\'');
     int hour = std::stoi(hour_min_24.substr(0,2));
     int min  = std::stoi(hour_min_24.substr(3,2));
     if(mt) ::spdlog::daily_logger_mt(name, filename, hour, min, truncate, max_size);
@@ -213,7 +213,7 @@ std::unique_ptr<sink> create_sink(const std::string& value)
   if(value=="File")             return std::make_unique<file_sink>();
   if(value=="RotatingFile")     return std::make_unique<rotating_file_sink>();
   if(value=="DailyFile")        return std::make_unique<daily_file_sink>();
-  RAISE_MSG(fcdk::bad_value_error, '\'' << value << "' is not valid for sink property");
+  RAISE_MSG(fcdk::bad_value_error, << '\'' << value << "' is not valid for sink property");
 }
 
 
@@ -267,7 +267,7 @@ check_valid_configuration_line(const std::string_view& line)
   static const std::regex r("^spdlog((\\.([^\\.]+))*)\\s*=\\s*(.*)$");
   std::cmatch matches;
   if(!std::regex_match(std::begin(line), std::end(line), matches, r))
-    RAISE_MSG(syntax_error, "Invalid syntax");
+    RAISE_MSG(syntax_error, << "Invalid syntax");
   return std::make_tuple(std::string_view(matches[1].first, matches[1].second),
                          std::string_view(matches[4].first, matches[4].second));
 }
@@ -308,7 +308,7 @@ parse_line(const std::string& line)
     // There's no sink configured until now, the first property
     // should be 'sink' and the value should be type of sink to create
     if(property!="sink")
-      RAISE_MSG(fcdk::bad_value_error, "Property error '" << property << "', expecting 'sink'");
+      RAISE_MSG(fcdk::bad_value_error, << "Property error '" << property << "', expecting 'sink'");
     auto sink = create_sink(value);
     sink->name = logger_name;
     configured_sinks[logger_name] = std::move(sink);
@@ -377,8 +377,8 @@ initialize(const std::filesystem::path& config_file)
   details::configured_sinks.clear();
 
   if(!std::filesystem::exists(config_file))
-    RAISE_MSG(fcdk::not_found_error, "Logger configuration file not found: "
-              << config_file);
+    RAISE_MSG(fcdk::not_found_error,
+              << "Logger configuration file not found: " << config_file);
 
   std::ifstream input_stream(config_file.native());
   details::read_configuration_stream(input_stream);

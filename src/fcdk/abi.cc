@@ -35,8 +35,9 @@ demangle(const std::string& typeid_name)
     if(status == -1)
       throw std::bad_alloc();
     else if(status == -2 || status == -3)
-      RAISE_MSG(std::invalid_argument,
-        '\'' << typeid_name.c_str() << "' does not represant a valid mangled name");
+      fcdk::throw_error<std::invalid_argument>()
+          << '\'' << typeid_name.c_str()
+          << "' does not represant a valid mangled name";
   }
 
 	return demangled.get();

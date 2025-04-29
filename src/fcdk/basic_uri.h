@@ -9,7 +9,7 @@
 #include <format>
 #include <regex>
 #include <string>
-#include <iostream>
+#include <sstream>
 
 
 namespace fcdk {
@@ -100,8 +100,10 @@ public:
   string_type const& query() const;
   string_type const& fragment() const;
 
+  string_type const& to_str() const { return as_string_; }
 
 private:
+  string_type as_string_;
   string_type scheme_;
   string_type authority_;
   string_type path_;
@@ -113,13 +115,14 @@ private:
 //------------------------------------------------------------------------------
 template <typename CharT, typename Traits, typename Allocator>
 basic_uri<CharT, Traits, Allocator>::basic_uri(const string_type& str)
+  : as_string_(str)
 {
   using regex_t = std::basic_regex<CharT>;
 
   regex_t regex(RFC3986_regex<CharT>::regex, std::regex_constants::ECMAScript|std::regex_constants::icase);
   std::match_results<const CharT*>  results;
   if(!std::regex_match(str.c_str(), results, regex)) {
-    RAISE_MSG(std::format_error, str << " is not a valid URI");
+    RAISE_MSG(std::format_error, << str << " is not a valid URI");
   }
 
   auto extract = [](const std::match_results<const CharT*>& results, std::size_t idx) -> string_type {

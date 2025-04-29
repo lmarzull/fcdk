@@ -5,7 +5,6 @@
 #define __FCDK_LOGGER_H__
 
 
-#include <cstdint>
 #include <spdlog/common.h>
 #include <spdlog/spdlog.h>
 #include <filesystem>
@@ -51,22 +50,23 @@ void  initialize(const std::filesystem::path& config_file);
 #define LOG_DEBUG(...)    spdlog::debug(__VA_ARGS__)
 #define LOG_INFO(...)     spdlog::info(__VA_ARGS__)
 #define LOG_WARN(...)     spdlog::warn(__VA_ARGS__)
-#define LOG_ERROR(...)    spdlog::err(__VA_ARGS__)
+#define LOG_ERROR(...)    spdlog::error(__VA_ARGS__)
 #define LOG_CRITICAL(...) spdlog::critical(__VA_ARGS__)
 
 
 #define __DO_LOGGER__(logger, loglevel, ...) \
   do {\
-    ::spdlog::get(logger)->log(::spdlog::level::loglevel, __VA_ARGS__); \
+    auto l = ::spdlog::get(logger);\
+    if(l) l->log(loglevel, __VA_ARGS__ ); \
   } while(0)
 
 
-#define LOGGER_TRACE(logger, ...)     __DO_LOGGER__(logger, trace, __VA_ARGS__)
-#define LOGGER_DEBUG(logger, ...)     __DO_LOGGER__(logger, debug, __VA_ARGS__)
-#define LOGGER_INFO(logger, ...)      __DO_LOGGER__(logger, info, __VA_ARGS__)
-#define LOGGER_WARN(logger, ...)      __DO_LOGGER__(logger, warn, __VA_ARGS__)
-#define LOGGER_ERROR(logger, ...)     __DO_LOGGER__(logger, err, __VA_ARGS__)
-#define LOGGER_CRITICAL(logger, ...)  __DO_LOGGER__(logger, critical, __VA_ARGS__)
+#define LOGGER_TRACE(logger, ...)     __DO_LOGGER__(logger, ::spdlog::level::trace, __VA_ARGS__)
+#define LOGGER_DEBUG(logger, ...)     __DO_LOGGER__(logger, ::spdlog::level::debug, __VA_ARGS__)
+#define LOGGER_INFO(logger, ...)      __DO_LOGGER__(logger, ::spdlog::level::info, __VA_ARGS__)
+#define LOGGER_WARN(logger, ...)      __DO_LOGGER__(logger, ::spdlog::level::warn, __VA_ARGS__)
+#define LOGGER_ERROR(logger, ...)     __DO_LOGGER__(logger, ::spdlog::level::err, __VA_ARGS__)
+#define LOGGER_CRITICAL(logger, ...)  __DO_LOGGER__(logger, ::spdlog::level::critical, __VA_ARGS__)
 
 
 #endif  // #ifndef __FCDK_LOGGER_H__

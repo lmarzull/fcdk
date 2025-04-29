@@ -158,14 +158,14 @@ plugin<T_interface>::get_interface_()
   try {
     interface = *shared_library_.get_symbol<T_interface**>("plugin_factory");
   } catch(const fcdk::system_error& excp ){
-    RAISE_MSG(plugin_error, excp.what());
+    RAISE_MSG(plugin_error, << excp.what());
   }
 
   if(!interface)
-    RAISE_MSG(plugin_error, "Invalid plugin: factory not created");
+    RAISE_MSG(plugin_error, << "Invalid plugin: factory not created");
 
   if(interface->plugin_implemented_api_id() != T_interface::api_id()) {
-    RAISE_MSG(plugin_error, "Invalid plugin: Wrong API Id");
+    RAISE_MSG(plugin_error, << "Invalid plugin: Wrong API Id");
   }
   return interface;
 }

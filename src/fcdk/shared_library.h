@@ -117,7 +117,7 @@ T_symbol_type
 shared_library::get_symbol(const char* name) const
 {
   if(!is_loaded())
-    RAISE_MSG(bad_state_error, "SharedLibrary not loaded!");
+    RAISE_MSG(bad_state_error, << "SharedLibrary not loaded!");
   T_symbol_type t = reinterpret_cast<T_symbol_type>(get_symbol_(name));
   return t;
 }
