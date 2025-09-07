@@ -2,6 +2,7 @@
 #define __FCDK_EXCEPTION_H__
 
 
+#include <fcdk/exception.h>
 #include <stdexcept>
 #include <sstream>
 #include <functional>
@@ -80,17 +81,17 @@ throw_error<T_exception>::throw_error()
  
 
 //------------------------------------------------------------------------------
-#define RAISE( e ) throw_error<e>()
+#define RAISE( e ) fcdk::throw_error<e>()
 
 
 //------------------------------------------------------------------------------
-#define RAISE_MSG( e, msg ) throw_error<e>() msg
+#define RAISE_MSG( e, msg ) fcdk::throw_error<e>() msg
 
 
 //------------------------------------------------------------------------------
 #define RAISE_ERRNO( e, msg ) do{\
     char buffer[1024]; char* m = strerror_r(errno, buffer, sizeof(buffer));\
-    throw_error<e>() msg << ": " << m;\
+    fcdk::throw_error<e>() msg << ": " << m;\
   }while(0)
 
 

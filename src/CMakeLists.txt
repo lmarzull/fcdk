@@ -4,7 +4,8 @@ add_library(fcdk SHARED
             fcdk/abi.cc
             fcdk/shared_library.cc
             fcdk/logger.cc
-            fcdk/basic_uri.cc)
+            fcdk/basic_uri.cc
+            fcdk/split.cc)
 add_library(fcdk::fcdk ALIAS fcdk)
 target_include_directories(fcdk PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                                        "$<INSTALL_INTERFACE:include>")
